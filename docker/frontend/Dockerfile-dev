@@ -1,0 +1,15 @@
+FROM node:latest
+
+RUN mkdir -p /home/app
+
+WORKDIR /home/app
+
+RUN npm install -g --silent --force yarn
+
+RUN alias yarn='node /usr/local/bin/yarn'
+
+COPY ./start.sh /home/start.sh
+
+USER root
+
+CMD /home/start.sh

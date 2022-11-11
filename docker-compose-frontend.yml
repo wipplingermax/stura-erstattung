@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  frontend: # Frontend
+    build:
+      context: ./docker/frontend/
+      dockerfile: Dockerfile-dev
+    ports:
+      - 3000:3000
+    networks:
+      - development
+    stdin_open: true
+    volumes:
+      - "./frontend:/home/app"
+
+networks: 
+  development:
+    name: development
