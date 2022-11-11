@@ -18,10 +18,12 @@ Die docker-compose-frontend.yml Datei wurde entsprechend angepasst
 
 Um nextJS im Dev-Modus im Container zu starten sollten folgende Schritte erfolgen: 
 
+1. Umgebungsvariable ``DOCKER_USER`` anlegen:
 ```
 DOCKER_USER="$(id -u):$(id -g)"
 ```
 
+2. Docker Container via ``docker-compose`` starten
 ```
 docker-compose -f docker-compose-frontend.yml
 ```
