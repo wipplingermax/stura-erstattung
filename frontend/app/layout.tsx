@@ -8,7 +8,9 @@ export default function RootLayout({
   return (
     <html>
       <head></head>
-      <body className="bg-body-background text-white">
+      {/* <body className="bg-body-background text-white"> */}
+      <body className="bg-gradient-to-r from-white to-gray-200">
+    
         {children}
       </body>
     </html>

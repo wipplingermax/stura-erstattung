@@ -3,7 +3,7 @@ import Link from "next/link"
 
 function Header(){
     return(
-        <div className="p-5 bg-stura-red">
+        <div className="p-5 bg-stura-red text-white shadow-lg">
             <Link href="/">
                 <p className="font-bold">Antrag Rückerstattung anteilige Semesterbeiträge</p>    
             </Link>
