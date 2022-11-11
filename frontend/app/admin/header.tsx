@@ -3,9 +3,9 @@ import Link from "next/link"
 
 function Header(){
     return(
-        <div className="p-5 bg-stura-yellow">
+        <div className="p-5 bg-stura-red">
             <Link href="/">
-                <p className="font-bold">Admin Panel</p>    
+                <p className="font-bold text-white">Admin Panel</p>    
             </Link>
         </div>
     )

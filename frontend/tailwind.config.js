@@ -7,6 +7,8 @@ module.exports = {
     extend:{
       colors: {
         'stura-yellow': '#FF7F00',
+        'stura-red': '#990000',
+        'body-background': '#111928',
       },
     }
   },
