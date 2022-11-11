@@ -10,4 +10,4 @@ RUN alias yarn='node /usr/local/bin/yarn'
 
 COPY ./start.sh /home/start.sh
 
-CMD /home/start.sh
+ENTRYPOINT ["/home/start.sh"]

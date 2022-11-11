@@ -12,8 +12,7 @@ services:
     stdin_open: true
     volumes:
       - "./frontend:/home/app"
-    user: ${UID}:${GID}
-
+    user: "$DOCKER_USER"
 networks: 
   development:
     name: development
