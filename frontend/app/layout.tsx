@@ -7,10 +7,10 @@ export default function RootLayout({
 }) {
   return (
     <html>
-      <head></head>
-      {/* <body className="bg-body-background text-white"> */}
-      <body className="bg-gradient-to-r from-white to-gray-200">
-    
+      <head>
+        <title>Formular Erstattung Semesterbeitrag</title>
+      </head>
+      <body className="flex bg-gradient-to-r from-white to-gray-200 h-screen text-gray-700">
         {children}
       </body>
     </html>

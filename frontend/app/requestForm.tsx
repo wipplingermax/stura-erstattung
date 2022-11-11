@@ -17,7 +17,7 @@ export default function RequestForm() {
                 <input type="text" name="bic" placeholder="optional: BIC" className="lg:col-span-2 h-10 border mt-1 rounded px-4 w-full bg-gray-50"/>
                 <input type="text" name="account_owner" placeholder="Kontoinhaber" className="lg:col-span-2 h-10 border mt-1 rounded px-4 w-full bg-gray-50"/>
             </form>
-            <div className="text-center mt-5 md:text-end">
+            <div className="text-center mt-5 lg:text-end">
                 <button className="bg-stura-red hover:bg-stura-red-hover text-white font-bold py-2 px-4 rounded">Absenden</button>
             </div>
             
