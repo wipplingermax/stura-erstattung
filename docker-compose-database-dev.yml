@@ -1,0 +1,33 @@
+version: '3.1'
+
+services:
+  postgres:
+    image: 'postgres:latest'
+    container_name: db_postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - 5432:5432 #auskommentieren, sofern die Datenbank nicht im Namespace des Hosts erreichbar sein soll
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  
+  pgadmin:
+    build: 
+      context: ./docker/server/pgadmin/
+      dockerfile: Dockerfile
+    #image: 'dpage/pgadmin4'
+    container_name: db_pgadmin
+    environment:
+      - "PGADMIN_DEFAULT_EMAIL=admin@example.com"
+      - "PGADMIN_DEFAULT_PASSWORD=admin"
+    ports:
+      - 80:80
+    volumes: 
+      - pgadmin_data:/var/lib/pgadmin
+     #- .docker/pgadmin/config:/var/lib/pgadmin
+
+volumes:
+  postgres_data:
+  pgadmin_data:
