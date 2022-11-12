@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"log"
 	"os"
 
 	// "net/http"
@@ -13,7 +15,20 @@ import (
 	models "server/models"
 )
 
-var DB *gorm.DB
+func initLogToFile() {
+	// If the file doesn't exist, create it or append to the file
+	file, err := os.OpenFile(
+		fmt.Sprintf("%s%s", os.Getenv("LOGGING_PATH"), os.Getenv("LOGGING_FILE_NAME")),
+		os.O_APPEND|os.O_CREATE|os.O_WRONLY,
+		0666)
+
+	if err != nil {
+		log.Printf("Failed to Log into File: %s", err)
+		return
+	}
+
+	log.SetOutput(io.MultiWriter(os.Stderr, file))
+}
 
 func initDB() (*gorm.DB, error) {
 
@@ -30,18 +45,23 @@ func initDB() (*gorm.DB, error) {
 
 func main() {
 
-	if os.Getenv("DEVELOPMENT") == "true" {
+	// optional: enable Development environment
 
+	if os.Getenv("DEVELOPMENT") == "true" {
 		err := godotenv.Load("./config/.env")
 		if err != nil {
-			fmt.Println("Error loading .env file")
+			fmt.Printf("Error while loading .env file for DEVELOPMENT: %s", err)
 		}
+	}
 
+	if os.Getenv("LOG_TO_FILE") == "true" {
+		initLogToFile()
 	}
 
 	db, err := initDB()
+
 	if err != nil {
-		fmt.Printf("Error connecting to DB: %s", err)
+		log.Fatalf("Error connecting to DB: %s", err)
 	}
 
 	if os.Getenv("MIGRATE") == "true" {
