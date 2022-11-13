@@ -11,6 +11,7 @@ import (
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 
 	models "server/models"
 )
@@ -32,6 +33,7 @@ func initLogToFile() {
 
 func initDB() (*gorm.DB, error) {
 
+	// configure Connection
 	var user string = os.Getenv("DB_USER")
 	var password string = os.Getenv("DB_PASSWORD")
 	var host string = os.Getenv("DB_HOST")
@@ -40,13 +42,32 @@ func initDB() (*gorm.DB, error) {
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", host, user, password, dbname, port)
 
-	return gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	// configure Logging
+	var gormConfig gorm.Config
+	var gormLogLevel logger.LogLevel
+
+	if os.Getenv("GORM_LOGGING") == "true" {
+		switch os.Getenv("GORM_LOGLEVEL") {
+		case "Silent":
+			gormLogLevel = logger.Silent
+		case "Error":
+			gormLogLevel = logger.Error
+		case "Warn":
+			gormLogLevel = logger.Warn
+		case "Info":
+			gormLogLevel = logger.Info
+		}
+		gormConfig = gorm.Config{Logger: logger.Default.LogMode(gormLogLevel)}
+	} else {
+		gormConfig = gorm.Config{}
+	}
+
+	return gorm.Open(postgres.Open(dsn), &gormConfig)
 }
 
 func main() {
 
-	// optional: enable Development environment
-
+	// enable Development environment
 	if os.Getenv("DEVELOPMENT") == "true" {
 		err := godotenv.Load("./config/.env")
 		if err != nil {
@@ -54,16 +75,19 @@ func main() {
 		}
 	}
 
+	// enable additional logging to file
 	if os.Getenv("LOG_TO_FILE") == "true" {
 		initLogToFile()
 	}
 
+	// initialize database connection
 	db, err := initDB()
 
 	if err != nil {
-		log.Fatalf("Error connecting to DB: %s", err)
+		log.Fatalf("Error while initializing DB: %s", err)
 	}
 
+	// optional: migrate database
 	if os.Getenv("MIGRATE") == "true" {
 		db.AutoMigrate(&models.Request{})
 	}
