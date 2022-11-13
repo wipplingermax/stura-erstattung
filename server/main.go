@@ -19,7 +19,7 @@ import (
 func initLogToFile() {
 	// If the file doesn't exist, create it or append to the file
 	file, err := os.OpenFile(
-		fmt.Sprintf("%s%s", os.Getenv("LOGGING_PATH"), os.Getenv("LOGGING_FILE_NAME")),
+		fmt.Sprintf("%s/%s", os.Getenv("LOGGING_PATH"), os.Getenv("LOGGING_FILE")),
 		os.O_APPEND|os.O_CREATE|os.O_WRONLY,
 		0666)
 
@@ -88,7 +88,7 @@ func main() {
 	}
 
 	// optional: migrate database
-	if os.Getenv("MIGRATE") == "true" {
+	if os.Getenv("DB_MIGRATE") == "true" {
 		db.AutoMigrate(&models.Request{})
 	}
 }
