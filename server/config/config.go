@@ -5,7 +5,7 @@ import "os"
 func Init() {
 
 	// enable Development environment
-	if os.Getenv("DEVELOPMENT") == "true" {
+	if os.Getenv("ENV_FILE") == "true" {
 		InitEnv()
 	}
 
