@@ -4,9 +4,10 @@ import (
 	"fmt"
 
 	// "net/http"
-	// "github.com/gin-gonic/gin"
 	config "server/config"
 	models "server/models"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -23,4 +24,10 @@ func main() {
 	result := db.First(&models.Request{})
 	fmt.Println(result.Error)
 
+	router := gin.Default()
+
+	router.POST("/formRequest", func(c *gin.Context) {
+		fmt.Println("Request kam an")
+	})
+	router.Run()
 }
