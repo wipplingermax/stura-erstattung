@@ -13,14 +13,11 @@ type Request struct {
 }
 
 func GETRequest(c *gin.Context) {
-	id := c.Params.ByName("id")
 
 	var request models.Request
 
-	err := models.Request.GETRequest(&request, id)
+	id := c.Params.ByName("id")
 
-	if err != nil {
-
-	}
+	models.GETRequest(&request, id)
 
 }
