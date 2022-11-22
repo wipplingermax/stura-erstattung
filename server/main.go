@@ -8,7 +8,10 @@ import (
 	models "server/models"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
+
+var DB *gorm.DB
 
 func main() {
 

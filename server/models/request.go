@@ -7,3 +7,7 @@ type Request struct {
 	Status string `gorm:"not null"`
 	Refund Refund
 }
+
+func GETRequest(r *Request, id string) (err error) {
+
+}
