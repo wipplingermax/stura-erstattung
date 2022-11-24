@@ -1,14 +1,12 @@
 package main
 
 import (
-	"fmt"
-
-	// "net/http"
-	config "server/config"
-	models "server/models"
-
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+
+	config "server/config"
+	controller "server/controller"
+	models "server/models"
 )
 
 var DB *gorm.DB
@@ -19,18 +17,14 @@ func main() {
 	config.Init()
 
 	// initialize database connection
-	db := config.InitDB()
+	config.InitDB()
+	DB = config.DB
 
 	// initialize Router
-
-	// test usage
-	result := db.First(&models.Request{})
-	fmt.Println(result.Error)
-
 	router := gin.Default()
 
-	router.POST("/formRequest", func(c *gin.Context) {
-		fmt.Println("Request kam an")
-	})
+	DB.AutoMigrate(&models.Request{})
+
+	router.POST("/v1/request", controller.CreateRequest)
 	router.Run()
 }
