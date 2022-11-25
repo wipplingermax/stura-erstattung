@@ -1,4 +1,5 @@
 import '../styles/globals.css';
+import {QueryClient, QueryClientProvider} from "react-query"
 
 export default function RootLayout({
   children,
@@ -6,11 +7,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html>
-      <head>
-        <title>Formular Erstattung Semesterbeitrag</title>
-      </head>
-      <body className="flex bg-gradient-to-r from-white to-gray-200 h-screen text-gray-700">
+    <html className="h-full scroll-smooth">
+      <body className="min-h-screen flex flex-col bg-gradient-to-r from-white to-gray-200 text-gray-700">
         {children}
       </body>
     </html>

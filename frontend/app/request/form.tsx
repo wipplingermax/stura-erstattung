@@ -3,8 +3,11 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import {useMutation} from "react-query"
 import * as yup from "yup"
 import { electronicFormatIBAN, isValidIBAN, isValidBIC } from 'ibantools'
+
+const api = "http://127.0.0.1:8080/v1/request"
 
 const schema = yup.object().shape({
     firstName: yup.string().required("Vorname benötigt"), 
@@ -21,12 +24,13 @@ const schema = yup.object().shape({
 export default function RequestForm() {
     const {register, handleSubmit, formState: {errors}} = useForm({resolver: yupResolver(schema)});
 
+
     function submitRequest(data: any){
         console.log(data);
     }
    
     return (
-            <form onSubmit={handleSubmit(submitRequest)} className="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6">
+            <form onSubmit={handleSubmit(submitRequest)} className="bg-white rounded shadow-xl p-4 px-4 md:p-8 mb-6">
                 <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
                     <label className="font-bold lg:col-span-2">Personenbezogene Daten</label>
                     <div>
