@@ -2,14 +2,13 @@ package controller
 
 import (
 	"net/http"
-	"server/config"
 	"server/models"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
-type requestData struct {
+type requestJSON struct {
+	ID                  uint   `json:"id"`
 	FirstName           string `json:"firstname"`
 	LastName            string `json:"lastname"`
 	MatriculationNumber string `json:"matriculationnumber"`
@@ -21,15 +20,10 @@ type requestData struct {
 	AccountOwner        string `json:"accountowner"`
 }
 
-type requestResponse struct {
-	ID uint `json:"id"`
-	requestData
-}
-
 func CreateRequest(c *gin.Context) {
 
 	// Binding Request Body to data-struct
-	var data requestData
+	var data requestJSON
 
 	if err := c.ShouldBindJSON(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -39,18 +33,20 @@ func CreateRequest(c *gin.Context) {
 	// convert request-data to database-model
 	var request models.Request
 
-	request.FirstName = data.FirstName
-	request.LastName = data.LastName
-	request.MatriculationNumber = data.MatriculationNumber
-	request.UniID = data.UniID
-	request.Email = data.Email
-	request.Phone = data.Phone
-	request.IBAN = data.IBAN
-	request.BIC = data.BIC
-	request.AccountOwner = data.AccountOwner
+	{
+		request.FirstName = data.FirstName
+		request.LastName = data.LastName
+		request.MatriculationNumber = data.MatriculationNumber
+		request.UniID = data.UniID
+		request.Email = data.Email
+		request.Phone = data.Phone
+		request.IBAN = data.IBAN
+		request.BIC = data.BIC
+		request.AccountOwner = data.AccountOwner
+	}
 
 	// query database
-	var DB *gorm.DB = config.DB
+
 	result := DB.Create(&request)
 
 	if result.Error != nil {
@@ -59,18 +55,20 @@ func CreateRequest(c *gin.Context) {
 	}
 
 	// convert database-model to response-data
-	var response requestResponse
+	var response requestJSON
 
-	response.ID = request.ID
-	response.FirstName = request.FirstName
-	response.LastName = request.LastName
-	response.MatriculationNumber = request.MatriculationNumber
-	response.UniID = request.UniID
-	response.Email = request.Email
-	response.Phone = request.Phone
-	response.IBAN = request.IBAN
-	response.BIC = request.BIC
-	response.AccountOwner = request.AccountOwner
+	{
+		response.ID = request.ID
+		response.FirstName = request.FirstName
+		response.LastName = request.LastName
+		response.MatriculationNumber = request.MatriculationNumber
+		response.UniID = request.UniID
+		response.Email = request.Email
+		response.Phone = request.Phone
+		response.IBAN = request.IBAN
+		response.BIC = request.BIC
+		response.AccountOwner = request.AccountOwner
+	}
 
 	c.JSON(http.StatusCreated, response)
 }

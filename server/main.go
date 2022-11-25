@@ -2,29 +2,29 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 
 	config "server/config"
 	controller "server/controller"
-	models "server/models"
 )
 
-var DB *gorm.DB
+var router *gin.Engine
 
-func main() {
+func init() {
 
 	// load environment, config logging
 	config.Init()
 
 	// initialize database connection
 	config.InitDB()
-	DB = config.DB
 
 	// initialize Router
+
+}
+
+func main() {
+
 	router := gin.Default()
-
-	DB.AutoMigrate(&models.Request{})
-
 	router.POST("/v1/request", controller.CreateRequest)
 	router.Run()
+
 }
