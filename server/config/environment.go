@@ -6,7 +6,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func InitEnv() {
+func InitEnvironment() {
 	err := godotenv.Load(".env")
 	if err != nil {
 		fmt.Println("Error while loading .env file for DEVELOPMENT")

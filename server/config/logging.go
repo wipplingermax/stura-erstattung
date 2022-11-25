@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func InitLogToFile() {
+func InitLogging() {
 	// If the file doesn't exist, create it or append to the file
 	var path string = "/var/log"
 	var filename string = "stura-erstattung.log"

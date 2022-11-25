@@ -6,11 +6,11 @@ func Init() {
 
 	// enable Development environment
 	if os.Getenv("ENV_FILE") == "true" {
-		InitEnv()
+		InitEnvironment()
 	}
 
 	// enable additional logging to file
 	if os.Getenv("LOG_TO_FILE") == "true" {
-		InitLogToFile()
+		InitLogging()
 	}
 }
