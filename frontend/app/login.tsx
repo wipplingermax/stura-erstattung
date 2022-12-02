@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -19,7 +20,7 @@ export default function Login() {
 
     function submitRequest(data: any){
 
-        if (auth(data)){      
+        if (auth(!data)){      
             router.push("/request");
         } else {
             console.log("login error")
@@ -27,7 +28,7 @@ export default function Login() {
     }
 
     function auth(data :any){
-        if (!data) {
+        if (data) {
             return true
         } else {
             setLoginError(true);
@@ -55,6 +56,9 @@ export default function Login() {
                         </div>
                         <div className="flex justify-center">
                             <input type="submit" name="submit" value="Login" className="bg-stura-red hover:bg-stura-red-hover text-white font-bold py-2 px-4 rounded mt-10"/>
+                        </div>
+                        <div className="flex justify-items-center">
+                            <p className="p-4 text-xs text-center">Ich studiere nicht mehr an der Universität Heidelberg und kann mich deswegen hier nicht einloggen: <Link href="/request" className="text-stura-red">Link</Link></p>
                         </div>
                     </form>
                 ) : (
