@@ -19,6 +19,7 @@ const schema = yup.object().shape({
     iban: yup.string().required("IBAN benötigt").test('iban','IBAN ist inkorrekt', value => {return isValidIBAN(electronicFormatIBAN(value!)!)}),
     bic: yup.string().test('bic','BIC ist inkorrekt', value => {return value == "" || isValidBIC(value!)}),
     accountOwner: yup.string().required("Kontoinhaber benötigt").max(40,"Kontoinhaber darf maximal 40 Zeichen lang sein"),
+    verficationNumber: yup.string().matches(/^[a-zA-Z]{12}$/, "Die Verfikationsnummer hat das Format'ABCD EFGH IJKL'"),
 })
 
 export default function RequestForm() {
@@ -66,6 +67,17 @@ export default function RequestForm() {
                     
                     <input type="text" placeholder="Kontoinhaber" className="lg:col-span-2 h-10 border mt-1 rounded px-4 w-full bg-gray-50" {...register("accountOwner")}/>
                     {errors.accountOwner? <p className="text-stura-red text-xs p-2">{errors.accountOwner.message?.toString()}</p>:""}
+
+                    <label className="font-bold lg:col-span-2 pt-6 ">Legitimationsnachweis</label>
+
+                    <div>
+                        <input type="text" placeholder="Verfikationsnummer" className="h-10 border mt-1 rounded px-4 w-full bg-gray-50" {...register("verficationNumber")} />
+                        {errors.verficationNumber? <p className="text-stura-red text-xs p-2">{errors.verficationNumber.message?.toString()}</p>:""}
+                    </div>
+                    <div>
+                        <p className="text-xs px-4 mt-1 h-10">Wo finde ich meine Verfikationsnummer?</p>
+                    </div>
+
                     
                 </div>
                 <div className="flex justify-center lg:justify-end">
