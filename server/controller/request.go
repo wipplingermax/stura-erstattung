@@ -7,68 +7,115 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type requestJSON struct {
-	ID                  uint   `json:"id"`
-	FirstName           string `json:"firstname"`
-	LastName            string `json:"lastname"`
-	MatriculationNumber string `json:"matriculationnumber"`
-	UniID               string `json:"uniid"`
-	Email               string `json:"email"`
-	Phone               string `json:"phone"`
-	IBAN                string `json:"iban"`
-	BIC                 string `json:"bic"`
-	AccountOwner        string `json:"accountowner"`
-}
-
-func CreateRequest(c *gin.Context) {
+func (c *Controller) CreateRequest(ctx *gin.Context) {
 
 	// Binding Request Body to data-struct
-	var data requestJSON
-
-	if err := c.ShouldBindJSON(&data); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	// convert request-data to database-model
 	var request models.Request
 
-	{
-		request.FirstName = data.FirstName
-		request.LastName = data.LastName
-		request.MatriculationNumber = data.MatriculationNumber
-		request.UniID = data.UniID
-		request.Email = data.Email
-		request.Phone = data.Phone
-		request.IBAN = data.IBAN
-		request.BIC = data.BIC
-		request.AccountOwner = data.AccountOwner
+	if err := ctx.ShouldBindJSON(&request); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	// query database
-
-	result := DB.Create(&request)
+	// result only represents the status of the query
+	// the data will be stored in request!
+	result := c.db.Create(&request)
 
 	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": result.Error.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": result.Error.Error()})
 		return
 	}
 
-	// convert database-model to response-data
-	var response requestJSON
+	// Set gin.Context
+	ctx.JSON(http.StatusCreated, request)
+}
 
-	{
-		response.ID = request.ID
-		response.FirstName = request.FirstName
-		response.LastName = request.LastName
-		response.MatriculationNumber = request.MatriculationNumber
-		response.UniID = request.UniID
-		response.Email = request.Email
-		response.Phone = request.Phone
-		response.IBAN = request.IBAN
-		response.BIC = request.BIC
-		response.AccountOwner = request.AccountOwner
+func (c *Controller) ReadRequest(ctx *gin.Context) {
+
+	var request models.Request
+
+	// Get ID from Context
+	id := ctx.Params.ByName("id")
+
+	// query database
+	// result only represents the status of the query
+	// the data will be stored in request!
+	result := c.db.First(&request, id)
+
+	if result.Error != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": result.Error.Error()})
+		return
 	}
 
-	c.JSON(http.StatusCreated, response)
+	// Set gin.Context
+	ctx.JSON(http.StatusCreated, request)
+}
+
+func (c *Controller) ReadRequests(ctx *gin.Context) {
+
+	// query database
+	// result only represents the status of the query
+	// the data will be stored in request!
+	var requests []models.Request
+
+	result := c.db.Find(&requests)
+
+	if result.Error != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": result.Error.Error()})
+		return
+	}
+
+	// Set gin.Context
+	ctx.JSON(http.StatusCreated, requests)
+}
+
+func (c *Controller) UpdateRequest(ctx *gin.Context) {
+
+	// Binding Request Body to data-struct
+	var request models.Request
+
+	if err := ctx.ShouldBindJSON(&request); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// query database
+	// result only represents the status of the query
+	// the data will be stored in request!
+	result := c.db.Save(&request)
+
+	if result.Error != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": result.Error.Error()})
+		return
+	}
+
+	// Set gin.Context
+	ctx.JSON(http.StatusCreated, request)
+}
+
+func (c *Controller) DeleteRequest(ctx *gin.Context) {
+
+	var request models.Request
+
+	// Get ID from Context
+	id := ctx.Params.ByName("id")
+
+	if err := ctx.ShouldBindJSON(&request); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// query database
+	// result only represents the status of the query
+	// the data will be stored in request!
+	result := c.db.Delete(&request, id)
+
+	if result.Error != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": result.Error.Error()})
+		return
+	}
+
+	// Set gin.Context
+	ctx.JSON(http.StatusCreated, request)
 }
