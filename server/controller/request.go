@@ -72,6 +72,7 @@ func (c *Controller) ReadRequests(ctx *gin.Context) {
 
 func (c *Controller) UpdateRequest(ctx *gin.Context) {
 
+	// id := ctx.Params.ByName("id")
 	// Binding Request Body to data-struct
 	var request models.Request
 
