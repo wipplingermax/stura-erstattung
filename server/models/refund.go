@@ -6,6 +6,6 @@ var DB *gorm.DB
 
 type Refund struct {
 	gorm.Model
-	Status  string `gorm:"not null"`
-	Request Request
+	Status       string `gorm:"not null"`
+	Transactions []Transcation
 }
