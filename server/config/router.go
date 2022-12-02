@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func initRouter() *gin.Engine {
+func InitRouter() *gin.Engine {
 
 	r := gin.Default()
 
@@ -24,16 +24,6 @@ func initRouter() *gin.Engine {
 	}
 
 	gin.SetMode(mode)
-
-	//adding routes
-	v1 := r.Group("/v1")
-
-	{
-		v1.GET("request", func(c *gin.Context) {
-			c.JSON(200, gin.H{"message": "Many Requests"})
-		})
-
-	}
 
 	return r
 }
