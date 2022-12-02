@@ -13,9 +13,7 @@ import (
 	"server/models"
 )
 
-var DB *gorm.DB
-
-func InitDB() {
+func InitDB() *gorm.DB {
 
 	// configure Connection
 	var user string = os.Getenv("DB_USER")
@@ -41,7 +39,7 @@ func InitDB() {
 		db.AutoMigrate(&models.Request{})
 	}
 
-	DB = db
+	return db
 }
 
 func initGormConfig() gorm.Config {
