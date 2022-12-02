@@ -1,13 +1,13 @@
 package controller
 
 import (
-	"server/config"
-
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
+type Controller struct {
+	db *gorm.DB
+}
 
-func init() {
-	DB = config.DB
+func InitController(db *gorm.DB) *Controller {
+	return &Controller{db: db}
 }
