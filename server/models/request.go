@@ -1,11 +1,7 @@
 package models
 
-import (
-	"gorm.io/gorm"
-)
-
 type Request struct {
-	gorm.Model
+	UUIDPkey
 	FirstName           string `gorm:"not null" json:"firstname"`
 	LastName            string `gorm:"not null" json:"lastname"`
 	MatriculationNumber string `gorm:"not null" json:"matriculationnumber"`

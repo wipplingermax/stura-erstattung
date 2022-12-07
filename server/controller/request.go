@@ -3,9 +3,17 @@ package controller
 import (
 	"net/http"
 	"server/models"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
+
+func santizeRequest(r *models.Request) {
+	r.CreatedAt = time.Time{}
+	r.UpdatedAt = time.Time{}
+	r.DeltedAt = gorm.DeletedAt{}
+}
 
 func (c *Controller) CreateRequest(ctx *gin.Context) {
 
@@ -16,6 +24,8 @@ func (c *Controller) CreateRequest(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	santizeRequest(&request)
 
 	// query database
 	// result only represents the status of the query
@@ -72,7 +82,8 @@ func (c *Controller) ReadRequests(ctx *gin.Context) {
 
 func (c *Controller) UpdateRequest(ctx *gin.Context) {
 
-	// id := ctx.Params.ByName("id")
+	id := ctx.Params.ByName("id")
+
 	// Binding Request Body to data-struct
 	var request models.Request
 
@@ -81,10 +92,18 @@ func (c *Controller) UpdateRequest(ctx *gin.Context) {
 		return
 	}
 
-	// query database
-	// result only represents the status of the query
-	// the data will be stored in request!
-	result := c.db.Save(&request)
+	// update data
+	// result only represents the status
+	result := c.db.Model(&request).Where("id = ?", id).Select("FirstName", "LastName", "MatriculationNumber", "UniID",
+		"Email", "Phone", "IBAN", "BIC", "AccountOwner").Updates(&request)
+
+	if result.Error != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": result.Error.Error()})
+		return
+	}
+
+	//update data-structure for output
+	result = c.db.Model(&request).Where("id = ?", id).First(&request)
 
 	if result.Error != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": result.Error.Error()})

@@ -1,8 +1,6 @@
 package models
 
-import "gorm.io/gorm"
-
 type Transcation struct {
-	gorm.Model
+	UUIDPkey
 	Status string `gorm:"not null"`
 }
