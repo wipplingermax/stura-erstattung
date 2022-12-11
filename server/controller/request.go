@@ -2,17 +2,26 @@ package controller
 
 import (
 	"net/http"
-	"server/models"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+
+	"server/models"
 )
 
-func santizeRequest(r *models.Request) {
+func santizeRequest(r *models.Request) (err error) {
+
+	// catches timestamp manipulation for create requests
 	r.CreatedAt = time.Time{}
 	r.UpdatedAt = time.Time{}
 	r.DeltedAt = gorm.DeletedAt{}
+
+	// checks and format request data
+	if perr := models.ParseRequest(r); perr != nil {
+		return perr
+	}
+	return nil
 }
 
 func (c *Controller) CreateRequest(ctx *gin.Context) {
@@ -25,7 +34,11 @@ func (c *Controller) CreateRequest(ctx *gin.Context) {
 		return
 	}
 
-	santizeRequest(&request)
+	// sanitize Request
+	if err := santizeRequest(&request); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	// query database
 	// result only represents the status of the query
@@ -92,10 +105,26 @@ func (c *Controller) UpdateRequest(ctx *gin.Context) {
 		return
 	}
 
+	// sanitize Request
+	if err := santizeRequest(&request); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	// update data
 	// result only represents the status
-	result := c.db.Model(&request).Where("id = ?", id).Select("FirstName", "LastName", "MatriculationNumber", "UniID",
-		"Email", "Phone", "IBAN", "BIC", "AccountOwner").Updates(&request)
+	result := c.db.Model(&request).Where("id = ?", id).
+		Select(
+			"FirstName",
+			"LastName",
+			"MatriculationNumber",
+			"UniID",
+			"Email",
+			"Phone",
+			"IBAN",
+			"BIC",
+			"AccountOwner").
+		Updates(&request)
 
 	if result.Error != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": result.Error.Error()})
