@@ -3,6 +3,7 @@ module server
 go 1.18
 
 require (
+	github.com/daqingshu/gorm-loggable v1.5.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/jackc/pgtype v1.12.0
 	github.com/joho/godotenv v1.4.0
@@ -24,6 +25,7 @@ require (
 	github.com/jackc/pgproto3/v2 v2.3.1 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20200714003250-2b9c44734f2b // indirect
 	github.com/jackc/pgx/v4 v4.17.2 // indirect
+	github.com/jinzhu/copier v0.0.0-20180308034124-7e38e58719c3 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.4 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect

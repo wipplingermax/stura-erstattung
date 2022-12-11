@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	loggable "github.com/daqingshu/gorm-loggable"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -13,33 +14,11 @@ import (
 	"server/models"
 )
 
-func InitDB() *gorm.DB {
-
-	// configure Connection
-	var user string = os.Getenv("DB_USER")
-	var password string = os.Getenv("DB_PASSWORD")
-	var host string = os.Getenv("DB_HOST")
-	var port string = os.Getenv("DB_PORT")
-	var dbname string = os.Getenv("DB_NAME")
-
-	var dsn string = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", host, user, password, dbname, port)
-
-	// configure GORM
-	var gormConfig gorm.Config = initGormConfig()
-
-	// initialize Connection
-	db, err := gorm.Open(postgres.Open(dsn), &gormConfig)
-
-	if err != nil {
-		log.Fatal("Error while initializing DB")
-	}
-
-	// optional: migrate database
-	if os.Getenv("DB_MIGRATE") == "true" {
-		db.AutoMigrate(&models.Request{})
-	}
-
-	return db
+func automigrate(db *gorm.DB) {
+	db.AutoMigrate(&models.Request{})
+	db.AutoMigrate(&models.Refund{})
+	db.AutoMigrate(&models.Transcation{})
+	db.AutoMigrate(&models.User{})
 }
 
 func initGormConfig() gorm.Config {
@@ -96,7 +75,39 @@ func initGormConfig() gorm.Config {
 			Colorful:                  true,         // Disable color
 		},
 	)
-
 	return gorm.Config{Logger: gormLogger}
+}
 
+func InitDB() *gorm.DB {
+
+	// configure Connection
+	var user string = os.Getenv("DB_USER")
+	var password string = os.Getenv("DB_PASSWORD")
+	var host string = os.Getenv("DB_HOST")
+	var port string = os.Getenv("DB_PORT")
+	var dbname string = os.Getenv("DB_NAME")
+
+	var dsn string = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", host, user, password, dbname, port)
+
+	// configure GORM
+	var gormConfig gorm.Config = initGormConfig()
+
+	// initialize Connection
+	db, err := gorm.Open(postgres.Open(dsn), &gormConfig)
+
+	if err != nil {
+		log.Fatal("Error while initializing DB")
+	}
+
+	// optional: migrate database
+	if os.Getenv("DB_MIGRATE") == "true" {
+		automigrate(db)
+	}
+
+	_, lerr := loggable.Register(db)
+	if lerr != nil {
+		panic("couldn't attach logging function to database")
+	}
+
+	return db
 }

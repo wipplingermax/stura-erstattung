@@ -3,11 +3,14 @@ package models
 import (
 	"fmt"
 
+	loggable "github.com/daqingshu/gorm-loggable"
+
 	"server/utils"
 )
 
 type Request struct {
 	UUIDPkey
+	loggable.LoggableModel
 	FirstName           string `gorm:"not null" json:"firstname"`
 	LastName            string `gorm:"not null" json:"lastname"`
 	MatriculationNumber string `gorm:"not null" json:"matriculationnumber"`
