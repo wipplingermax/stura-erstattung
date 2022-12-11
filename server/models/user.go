@@ -1,9 +1,7 @@
 package models
 
-import "gorm.io/gorm"
-
 type User struct {
-	gorm.Model
+	UUIDPkey
 	Name     string `gorm:"not null"`
 	Password string `gorm:"not null"`
 }
