@@ -1,13 +1,9 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-
-	config "server/config"
-	controller "server/controller"
+	"server/config"
+	"server/controller"
 )
-
-var router *gin.Engine
 
 func main() {
 
@@ -34,4 +30,5 @@ func main() {
 	}
 
 	r.Run()
+
 }
