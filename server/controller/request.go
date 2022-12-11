@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log"
 	"net/http"
 	"time"
 
@@ -12,10 +13,14 @@ import (
 
 func santizeRequest(r *models.Request) (err error) {
 
-	// catches timestamp manipulation for create requests
+	// catches manipulation for create requests
 	r.CreatedAt = time.Time{}
 	r.UpdatedAt = time.Time{}
 	r.DeltedAt = gorm.DeletedAt{}
+	r.StatusCode = 0
+	r.Status = ""
+	r.RefundID = 0
+	r.Verified = false
 
 	// checks and format request data
 	if perr := models.ParseRequest(r); perr != nil {
@@ -30,23 +35,26 @@ func (c *Controller) CreateRequest(ctx *gin.Context) {
 	var request models.Request
 
 	if err := ctx.ShouldBindJSON(&request); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		log.Println(err.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Anfrage fehlgeschlagen"})
 		return
 	}
 
 	// sanitize Request
 	if err := santizeRequest(&request); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		log.Println(err.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Anfrage fehlgeschlagen"})
 		return
 	}
 
 	// query database
 	// result only represents the status of the query
 	// the data will be stored in request!
-	result := c.db.Create(&request)
+	res := c.db.Create(&request)
 
-	if result.Error != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": result.Error.Error()})
+	if res.Error != nil {
+		log.Println(res.Error.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Anfrage fehlgeschlagen"})
 		return
 	}
 

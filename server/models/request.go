@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	loggable "github.com/daqingshu/gorm-loggable"
+	"gorm.io/gorm"
 
 	"server/utils"
 )
@@ -20,9 +21,20 @@ type Request struct {
 	IBAN                string `gorm:"not null" json:"iban"`
 	BIC                 string `json:"bic"`
 	AccountOwner        string `gorm:"not null" json:"accountowner"`
-	valid               bool   `gorm:"not null"`
-	// Refund              Refund
+	Verified            bool   `gorm:"not null"`
+	StatusCode          uint   `gorm:"not null" json:"statuscode"`
+	Status              string `json:"status"`
+	RefundID            uint
+	Refund              Refund
 }
+
+// StatusCodes
+const (
+	UNDEFINED int = 0
+	ACCEPTED      = 1
+	WAITING       = 2
+	DECLINED      = 3
+)
 
 func ParseRequest(r *Request) (err error) {
 
@@ -72,4 +84,20 @@ func ParseRequest(r *Request) (err error) {
 		return err
 	}
 	return nil
+}
+
+func ValidateRequest(r *Request, db *gorm.DB) (err error) {
+
+	// check if uniID exists
+
+	// check Parse
+	if err = ParseRequest(r); err != nil {
+		r.StatusCode = 3
+		return err
+	}
+
+}
+
+func CreateRefund(r *Request) (err error) {
+
 }
