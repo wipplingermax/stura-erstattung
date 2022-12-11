@@ -8,9 +8,20 @@
           "mode": "debug",
           "host": "127.0.0.1",
           "program": "${workspaceRoot}/server",
-          "env": {"ENV_FILE":"true"},
+          "env": {},
           "args": [],
           "showLog": true
-      }       
+      },
+      {
+        "name": "Test Current File",
+        "type": "go",
+        "request": "launch",
+        "mode": "test",
+        "host": "127.0.0.1",
+        "program": "${file}",
+        "env": {},
+        "args": [],
+        "showLog": true
+    }             
   ]
 }
