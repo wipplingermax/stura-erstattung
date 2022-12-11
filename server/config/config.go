@@ -1,12 +1,16 @@
 package config
 
-import "os"
+import (
+	"fmt"
+	"os"
+)
 
 func Init() {
 
 	// enable Development environment
-	if os.Getenv("ENV_FILE") == "true" {
+	if _, err := os.Stat(".env"); !os.IsNotExist(err) {
 		InitEnvironment()
+		fmt.Println("loaded local .env file next to executable")
 	}
 
 	// enable additional logging to file
