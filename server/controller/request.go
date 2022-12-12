@@ -19,7 +19,7 @@ func santizeRequest(r *models.Request) (err error) {
 	r.DeltedAt = gorm.DeletedAt{}
 	r.StatusCode = 0
 	r.Status = ""
-	r.RefundID = 0
+	//r.RefundID = uuid.UUID{}
 	r.Verified = false
 
 	// checks and format request data
@@ -57,6 +57,11 @@ func (c *Controller) CreateRequest(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Anfrage fehlgeschlagen"})
 		return
 	}
+
+	// TODO:
+	// check if verifying can be processed automatically
+
+	// check if valid and refund can be processed automatically
 
 	// Set gin.Context
 	ctx.JSON(http.StatusCreated, request)
