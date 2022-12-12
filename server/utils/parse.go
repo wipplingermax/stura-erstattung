@@ -2,9 +2,9 @@ package utils
 
 import (
 	"fmt"
+	"math/big"
 	"net/mail"
 	"regexp"
-	"strconv"
 	"strings"
 )
 
@@ -17,7 +17,7 @@ func ParseFirstName(s *string) (err error) {
 		return fmt.Errorf("Firstname invalid")
 	}
 
-	s = &p
+	*s = p
 	return nil
 }
 
@@ -30,7 +30,7 @@ func ParseLastName(s *string) (err error) {
 		return fmt.Errorf("Lastname invalid")
 	}
 
-	s = &p
+	*s = p
 	return nil
 }
 
@@ -39,11 +39,11 @@ func ParseMatriculationNumber(s *string) (err error) {
 
 	p := strings.ReplaceAll(*s, " ", "")
 
-	if _, err := regexp.MatchString("/^[0-9]{7}$/", p); err != nil {
+	if _, err := regexp.MatchString("^[0-9]{7}$", p); err != nil {
 		return fmt.Errorf("Matriculationnumber invalid")
 	}
 
-	s = &p
+	*s = p
 	return nil
 }
 
@@ -52,11 +52,11 @@ func ParseUniID(s *string) (err error) {
 
 	p := strings.ToLower(strings.ReplaceAll(*s, " ", ""))
 
-	if val, _ := regexp.MatchString("/^[a-z]{2}[0-9]{3}$/", p); !val {
+	if val, _ := regexp.MatchString("^[a-z]{2}[0-9]{3}$", p); !val {
 		return fmt.Errorf("Uni-ID invalid")
 	}
 
-	s = &p
+	*s = p
 	return nil
 }
 
@@ -70,7 +70,7 @@ func ParseEmail(s *string) (err error) {
 	}
 
 	p = m.String()
-	s = &p
+	*s = p
 	return nil
 }
 
@@ -79,7 +79,7 @@ func ParsePhone(s *string) (err error) {
 
 	p := strings.ReplaceAll(*s, " ", "")
 
-	s = &p
+	*s = p
 	return nil
 }
 
@@ -89,12 +89,12 @@ func ParseIBAN(s *string) (err error) {
 	p := strings.ToUpper(strings.ReplaceAll(*s, " ", ""))
 
 	// german IBAN
-	if val, _ := regexp.MatchString("/^DE/", p); !val {
+	if val, _ := regexp.MatchString("^DE", p); !val {
 		return fmt.Errorf("IBAN invalid - german IBAN needed")
 	}
 
 	// 22 digits
-	if val, _ := regexp.MatchString("/^DE[0-9]{20}$/", p); !val {
+	if val, _ := regexp.MatchString("^DE[0-9]{20}$", p); !val {
 		return fmt.Errorf("IBAN invalid")
 	}
 
@@ -104,13 +104,19 @@ func ParseIBAN(s *string) (err error) {
 	// 3. treat the account number as a large integer, divide it by 97 and use the remainder for check
 	// a valid Iban is indicated by a remainder value of 1
 
-	var checksum string
-	checksum = p[4:] + "1314" + p[2:3]
-	if res, _ := strconv.Atoi(checksum); res%97 != 1 {
-		return fmt.Errorf("Request IBAN invalid")
+	var checksum big.Int
+	var quotient big.Int
+	var result big.Int
+
+	checksum.SetString(p[4:]+"1314"+p[2:4], 10)
+	quotient.SetInt64(97)
+	result.Mod(&checksum, &quotient)
+
+	if result.Int64() != 1 {
+		return fmt.Errorf("IBAN invalid")
 	}
 
-	s = &p
+	*s = p
 	return nil
 }
 
@@ -119,11 +125,11 @@ func ParseBIC(s *string) (err error) {
 
 	p := strings.ToUpper(strings.ReplaceAll(*s, " ", ""))
 
-	if val, _ := regexp.MatchString("/^[0-9A-Z]{8:11}$/", p); !val {
+	if val, _ := regexp.MatchString("^[0-9A-Z]{8:11}$", p); !val {
 		return fmt.Errorf("Bic invalid")
 	}
 
-	s = &p
+	*s = p
 	return nil
 }
 
@@ -136,6 +142,6 @@ func ParseAccountOwner(s *string) (err error) {
 		return fmt.Errorf("Lastname invalid")
 	}
 
-	s = &p
+	*s = p
 	return nil
 }
