@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	loggable "github.com/daqingshu/gorm-loggable"
+	uuid "github.com/jackc/pgtype/ext/gofrs-uuid"
 	"gorm.io/gorm"
 
 	"server/utils"
@@ -12,19 +13,19 @@ import (
 type Request struct {
 	UUIDPkey
 	loggable.LoggableModel
-	FirstName           string `gorm:"not null" json:"firstname"`
-	LastName            string `gorm:"not null" json:"lastname"`
-	MatriculationNumber string `gorm:"not null" json:"matriculationnumber"`
-	UniID               string `gorm:"not null" json:"uniid"`
-	Email               string `gorm:"not null" json:"email"`
-	Phone               string `json:"phone"`
-	IBAN                string `gorm:"not null" json:"iban"`
-	BIC                 string `json:"bic"`
-	AccountOwner        string `gorm:"not null" json:"accountowner"`
-	Verified            bool   `gorm:"not null"`
-	StatusCode          uint   `gorm:"not null" json:"statuscode"`
-	Status              string `json:"status"`
-	RefundID            uint
+	FirstName           string    `gorm:"not null" json:"firstname"`
+	LastName            string    `gorm:"not null" json:"lastname"`
+	MatriculationNumber string    `gorm:"not null" json:"matriculationnumber"`
+	UniID               string    `gorm:"not null" json:"uniid"`
+	Email               string    `gorm:"not null" json:"email"`
+	Phone               string    `json:"phone"`
+	IBAN                string    `gorm:"not null" json:"iban"`
+	BIC                 string    `json:"bic"`
+	AccountOwner        string    `gorm:"not null" json:"accountowner"`
+	Verified            bool      `gorm:"not null"`
+	StatusCode          uint      `gorm:"not null" json:"statuscode"`
+	Status              string    `json:"status"`
+	RefundID            uuid.UUID `gorm:"type:uuid"`
 	Refund              Refund
 }
 
@@ -86,18 +87,17 @@ func ParseRequest(r *Request) (err error) {
 	return nil
 }
 
-func ValidateRequest(r *Request, db *gorm.DB) (err error) {
+func IsValidRequest(r *Request, db *gorm.DB) (err error) {
 
 	// check if uniID exists
+	return nil
 
-	// check Parse
-	if err = ParseRequest(r); err != nil {
-		r.StatusCode = 3
-		return err
-	}
+	// parses
+
+	// isVerfied
 
 }
 
-func CreateRefund(r *Request) (err error) {
-
+func (r *Request) CreateRefund() (err error) {
+	return nil
 }
